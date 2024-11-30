@@ -1,0 +1,19 @@
+{
+    "editor.formatOnSave": true,
+    "editor.defaultFormatter": "esbenp.prettier-vscode",
+    "editor.codeActionsOnSave": {
+      "source.fixAll.eslint": true
+    },
+    "eslint.validate": [
+      "javascript",
+      "javascriptreact",
+      "typescript",
+      "typescriptreact"
+    ],
+    "typescript.tsdk": "node_modules/typescript/lib",
+    "files.autoSave": "onFocusChange",
+    "prettier.configPath": ".prettierrc.js",
+    "eslint.options": {
+      "extensions": [".js", ".jsx", ".ts", ".tsx"]
+    }
+  }
