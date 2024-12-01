@@ -7,13 +7,13 @@ const Navbar = () => {
     const [isOpen, setIsOpen] = useState(false)
 
     const firstLinks = [
-        { href: '#home', label: 'About' },
-        { href: '#about', label: 'Store' },
+        { href: 'https://about.google/?fg=1&utm_source=google-IN&utm_medium=referral&utm_campaign=hp-header', label: 'About' },
+        { href: 'https://store.google.com/in/?utm_source=hp_header&utm_medium=google_ooo&utm_campaign=GS100042&hl=en-GB', label: 'Store' },
     ]
 
     const secondLinks = [
-        { href: '#services', label: 'Gmail' },
-        { href: '#contact', label: 'Images' }
+        { href: 'https://mail.google.com/mail/u/0/', label: 'Gmail' },
+        { href: 'https://www.google.com/imghp?hl=en&ogbl', label: 'Images' }
     ]
 
     const toggleMenu = () => {
@@ -47,11 +47,11 @@ const Navbar = () => {
                                 </a>
                             ))}
                         </div>
-                        <div className='ml-[15px]'>
+                        <a href='https://labs.google.com/search?source=hp' className='ml-[15px]'>
                             <HoverWrapper>
                                 <Labs />
                             </HoverWrapper>
-                        </div>
+                        </a>
                         <div className='ml-[11px]'>
                             <HoverWrapper>
                                 <div className='w-6'>
