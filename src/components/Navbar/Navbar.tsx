@@ -60,7 +60,7 @@ const Navbar = () => {
                             </HoverWrapper>
                         </div>
                         <div className='ml-[8px]'>
-                        <Avatar />
+                            <Avatar />
                         </div>
                     </div>
                 </div>
@@ -86,7 +86,7 @@ const Avatar = () => {
 }
 
 const HoverWrapper: FC<PropsWithChildren> = ({ children }) => {
-    return <div className='w-10 flex justify-center items-center'>{children}</div>
+    return <div className='rounded-full bg-transparent hover:bg-[#2f3237] transition duration-200 w-10 h-10 flex justify-center items-center'>{children}</div>
 }
 
 export default Navbar
