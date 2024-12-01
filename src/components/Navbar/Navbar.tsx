@@ -1,7 +1,7 @@
 "use client";
 
 import Image from 'next/image';
-import React, { useState } from 'react'
+import React, { FC, PropsWithChildren, useState } from 'react'
 
 const Navbar = () => {
     const [isOpen, setIsOpen] = useState(false)
@@ -35,7 +35,7 @@ const Navbar = () => {
                             </a>
                         ))}
                     </div>
-                    <div className='flex items-center'>
+                    <div className='flex items-center pr-[14px]'>
                         <div className="flex space-x-[15px] items-center">
                             {secondLinks.map((link) => (
                                 <a
@@ -47,15 +47,21 @@ const Navbar = () => {
                                 </a>
                             ))}
                         </div>
-                        <div className='w-10 ml-[15px]'>
-                            <Labs />
+                        <div className='ml-[15px]'>
+                            <HoverWrapper>
+                                <Labs />
+                            </HoverWrapper>
                         </div>
-                        <div className='w-10 ml-[11px]'>
-                            <div className='w-6'>
-                                <Menu />
-                            </div>
+                        <div className='ml-[11px]'>
+                            <HoverWrapper>
+                                <div className='w-6'>
+                                    <Menu />
+                                </div>
+                            </HoverWrapper>
                         </div>
+                        <div className='ml-[8px]'>
                         <Avatar />
+                        </div>
                     </div>
                 </div>
             </div>
@@ -72,11 +78,15 @@ const Menu = () => {
 }
 
 const Avatar = () => {
-    return <div className='w-10'>
-        <div className='w-8'>
+    return <HoverWrapper>
+        <div className='w-8 h-8 overflow-hidden rounded-2xl'>
             <Image src={'https://picsum.photos/32/32'} width={32} height={32} alt="logo" />
         </div>
-    </div>
+    </HoverWrapper>
+}
+
+const HoverWrapper: FC<PropsWithChildren> = ({ children }) => {
+    return <div className='w-10 flex justify-center items-center'>{children}</div>
 }
 
 export default Navbar
