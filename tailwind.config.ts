@@ -11,8 +11,9 @@ export default {
       colors: {
         background: "#1F2124",
         foreground: "#1F2124",
-        secondary:"#4D5156",
-        tertiary:'#313134'
+        secondary: "#4D5156",
+        tertiary: '#313134',
+        footer: '#171717'
       },
     },
   },
