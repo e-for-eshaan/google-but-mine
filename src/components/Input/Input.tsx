@@ -83,8 +83,8 @@ const GoogleSearchInput = () => {
                 <IconTray />
             </div>
             <div className='flex mt-[29px] mb-[21px] gap-[11px] text-[14px]'>
-                <button className='bg-[#313134] px-4 hover:border-[#616066] border-[1px] border-transparent h-9'>Google Search</button>
-                <button className='bg-[#313134] px-4 hover:border-[#616066] border-[1px] border-transparent h-9'>I'm Feeling Lucky</button>
+                <button className='rounded-s bg-[#313134] px-4 hover:border-[#616066] border-[1px] border-transparent h-9'>Google Search</button>
+                <button className='rounded-s bg-[#313134] px-4 hover:border-[#616066] border-[1px] border-transparent h-9'>I'm Feeling Lucky</button>
             </div>
             <div className='flex text-[13px] mt-1'>
                 <p className='text-[#bfbfbf] font-[500]'>Google offered in:</p>
