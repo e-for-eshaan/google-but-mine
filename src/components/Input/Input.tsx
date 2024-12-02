@@ -1,6 +1,7 @@
 "use client";
 
-import { useRef, useState } from 'react';
+import { ForwardedRef, forwardRef, useRef, useState } from 'react';
+import { inherits } from 'util';
 
 const LANGS = [
     "हिन्दी", "বাংলা", "తెలుగు", "मराठी", "தமிழ்", "ગુજરાતી", "ಕನ್ನಡ", "മലയാളം", "ਪੰਜਾਬੀ",
@@ -75,11 +76,27 @@ const GoogleSearchInput = () => {
         window.location.href = `https://www.google.com/search?q=${encodeURIComponent(suggestion)}`
     }
 
+
+    const [focused, setFocused] = useState(false)
+
     return (
-        <div className='flex flex-col justify-center items-center mb-10'>
-            <div className='flex items-center h-12 w-[584px] bg-secondary focus:bg-tertiary rounded-full mt-[26px]'>
+        <div
+            className='flex flex-col justify-center items-center mb-10'
+
+        >
+            <div
+                onClick={() => {
+                    inputRef.current?.focus()
+                }}
+                className={`flex items-center h-12 w-[584px] bg-secondary focus:bg-tertiary mt-[26px]`} style={{
+                    borderBottomLeftRadius: focused ? 0 : '24px',
+                    borderBottomRightRadius: focused ? 0 : '24px',
+                    borderTopLeftRadius: '24px',
+                    borderTopRightRadius: '24px',
+                    transition: 'border-radius 0.2s'
+                }}>
                 <SearchIcon />
-                <InputCore />
+                <InputCore setFocused={setFocused} ref={inputRef} />
                 <IconTray />
             </div>
             <div className='flex mt-[29px] mb-[21px] gap-[11px] text-[14px]'>
@@ -94,9 +111,16 @@ const GoogleSearchInput = () => {
     )
 }
 
-const InputCore = () => {
-    return <input className='w-full bg-transparent outline-none' />
+const InputCore = forwardRef((props: {
+    setFocused: (focused: boolean) => void
+}, ref: ForwardedRef<HTMLInputElement>) => {
+    const { setFocused } = props
+    return <input
+        onBlur={() => setFocused(false)}
+        onFocus={() => setFocused(true)}
+        ref={ref} className='w-full bg-transparent outline-none' />
 }
+)
 
 const SearchIcon = () => {
     return <div className='w-[15px] h-[15px] ml-[16px] mb-1 mr-[14px]'>
@@ -116,7 +140,7 @@ const SearchIcon = () => {
 }
 
 const IconTray = () => {
-    return <div className='flex mr-[17px] gap-4 items-center'>
+    return <div className='flex mr-[17px] gap-4 items-center mb-[2px]'>
         <div className='w-6'>
             <Mic />
         </div>
