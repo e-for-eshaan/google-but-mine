@@ -2,6 +2,10 @@
 
 import { useRef, useState } from 'react';
 
+const LANGS = [
+    "हिन्दी", "বাংলা", "తెలుగు", "मराठी", "தமிழ்", "ગુજરાતી", "ಕನ್ನಡ", "മലയാളം", "ਪੰਜਾਬੀ",
+]
+
 const GoogleSearchInput = () => {
     const [query, setQuery] = useState('')
     const [suggestions, setSuggestions] = useState<string[]>([])
@@ -72,10 +76,20 @@ const GoogleSearchInput = () => {
     }
 
     return (
-        <div className='flex items-center h-12 w-[584px] bg-secondary focus:bg-tertiary rounded-full mt-[26px]'>
-            <SearchIcon />
-            <InputCore />
-            <IconTray />
+        <div className='flex flex-col justify-center items-center mb-10'>
+            <div className='flex items-center h-12 w-[584px] bg-secondary focus:bg-tertiary rounded-full mt-[26px]'>
+                <SearchIcon />
+                <InputCore />
+                <IconTray />
+            </div>
+            <div className='flex mt-[29px] mb-[21px] gap-[11px] text-[14px]'>
+                <button className='bg-[#313134] px-4 hover:border-[#616066] border-[1px] border-transparent h-9'>Google Search</button>
+                <button className='bg-[#313134] px-4 hover:border-[#616066] border-[1px] border-transparent h-9'>I'm Feeling Lucky</button>
+            </div>
+            <div className='flex text-[13px] mt-1'>
+                <p className='text-[#bfbfbf] font-[500]'>Google offered in:</p>
+                <div className='gap-[9px] flex ml-2'>{LANGS.map((item, index) => <a className='text-link font-[600]' key={index}>{item}</a>)}</div>
+            </div>
         </div>
     )
 }
@@ -85,7 +99,7 @@ const InputCore = () => {
 }
 
 const SearchIcon = () => {
-    return <div className='w-[15px] h-[15px] ml-[14px] mb-1 mr-[14px]'>
+    return <div className='w-[15px] h-[15px] ml-[16px] mb-1 mr-[14px]'>
         <svg
             xmlns="http://www.w3.org/2000/svg"
             className="h-[18px] w-[18px]"

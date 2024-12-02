@@ -13,7 +13,8 @@ export default {
         foreground: "#1F2124",
         secondary: "#4D5156",
         tertiary: '#313134',
-        footer: '#171717'
+        footer: '#171717',
+        link:'#9AC3FF'
       },
     },
   },
