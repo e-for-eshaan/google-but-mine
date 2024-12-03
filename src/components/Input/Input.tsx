@@ -63,8 +63,8 @@ const GoogleSearchInput = () => {
                     inputRef.current?.focus()
                 }}
                 className={`${focused ? "hover:bg-tertiary" : "hover:bg-inputHover"} flex items-center h-12 w-[584px] ${focused ? "bg-tertiary" : "bg-secondary"} mt-[26px] relative`} style={{
-                    borderBottomLeftRadius: focused && query ? '0px' : 24,
-                    borderBottomRightRadius: focused && query ? '0px' : 24,
+                    borderBottomLeftRadius: focused && query && results ? '0px' : 24,
+                    borderBottomRightRadius: focused && query && results ? '0px' : 24,
                     borderTopLeftRadius: '24px',
                     borderTopRightRadius: '24px',
                 }}>
@@ -172,6 +172,8 @@ const SearchResults: React.FC<{
         }
     }, [results, selectedIndex])
 
+    if (results.length === 0) return null
+
     return (
         <div
             ref={resultsContainerRef}
@@ -185,9 +187,11 @@ const SearchResults: React.FC<{
                 <a
                     key={result}
                     href={result}
-                    className={`hover:bg-secondary flex items-center
-            ${index === selectedIndex ? 'bg-secondary' : 'bg-tertiary'}
-          `}
+                    onClick={(e) => {
+                        e.preventDefault()
+                        window.location.href = `https://www.google.com/search?q=${encodeURIComponent(result)}`
+                    }}
+                    className={`hover:bg-secondary flex items-center ${index === selectedIndex ? 'bg-secondary' : 'bg-tertiary'}`}
                 >
                     <SearchIcon />
                     <p className="py-1">
