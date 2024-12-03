@@ -1,7 +1,7 @@
 "use client";
 
 import { ForwardedRef, forwardRef, useRef, useState } from 'react';
-import { inherits } from 'util';
+import Tooltip from '@/components/Tooltip';
 
 const LANGS = [
     "हिन्दी", "বাংলা", "తెలుగు", "मराठी", "தமிழ்", "ગુજરાતી", "ಕನ್ನಡ", "മലയാളം", "ਪੰਜਾਬੀ",
@@ -82,13 +82,12 @@ const GoogleSearchInput = () => {
     return (
         <div
             className='flex flex-col justify-center items-center mb-10'
-
         >
             <div
                 onClick={() => {
                     inputRef.current?.focus()
                 }}
-                className={`flex items-center h-12 w-[584px] bg-secondary focus:bg-tertiary mt-[26px]`} style={{
+                className={`hover:bg-inputHover flex items-center h-12 w-[584px] bg-secondary mt-[26px]`} style={{
                     borderBottomLeftRadius: focused ? 0 : '24px',
                     borderBottomRightRadius: focused ? 0 : '24px',
                     borderTopLeftRadius: '24px',
@@ -141,12 +140,16 @@ const SearchIcon = () => {
 
 const IconTray = () => {
     return <div className='flex mr-[17px] gap-4 items-center mb-[2px]'>
-        <div className='w-6'>
-            <Mic />
-        </div>
-        <div className='w-6'>
-            <Lens />
-        </div>
+        <Tooltip text='Search by voice'>
+            <div className='w-6'>
+                <Mic />
+            </div>
+        </Tooltip>
+        <Tooltip text='Search by image'>
+            <div className='w-6'>
+                <Lens />
+            </div>
+        </Tooltip>
     </div>
 }
 
