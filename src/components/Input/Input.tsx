@@ -1,6 +1,6 @@
 "use client";
 
-import { ForwardedRef, forwardRef } from 'react';
+import { Dispatch, ForwardedRef, forwardRef, SetStateAction } from 'react';
 import Tooltip from '@/components/Tooltip';
 import FileDropZone from '../ImageDrop/ImageDrop';
 import useClickOutside from '@/hooks/useClickOutside';
@@ -14,6 +14,9 @@ const GoogleSearchInput = () => {
     const [suggestions, setSuggestions] = useState<string[]>([])
     const [activeSuggestionIndex, setActiveSuggestionIndex] = useState(-1)
     const inputRef = useRef<HTMLInputElement>(null)
+
+    const [results, setResults] = useState<string[]>([])
+    const [selectedIndex, setSelectedIndex] = useState<number>(-1)
 
     // Mock suggestions (in a real app, you'd fetch these from an API)
     const mockSuggestions = [
@@ -64,22 +67,27 @@ const GoogleSearchInput = () => {
                     borderBottomRightRadius: focused && query ? '0px' : 24,
                     borderTopLeftRadius: '24px',
                     borderTopRightRadius: '24px',
-                    transition: 'border-radius 0.2s'
                 }}>
-                {showImageDrop ? <div ref={dropdownRef} className='w-full h-[362px] absolute left-0 top-0 p-5' style={{ borderRadius: 24 }}>
-                    <div className='flex justify-center relative w-full mb-[14px]'>
-                        <p className='text-[16px]'>Search any image with Google Lens</p>
-                        <div className='w-[20px] h-[20px] absolute right-0 top-0 cursor-pointer' onClick={() => setShowImageDrop(false)}>
-                            <Cross />
+                {showImageDrop ?
+                    <div ref={dropdownRef} className='w-full h-[362px] absolute left-0 top-0 p-5 bg-tertiary' style={{ borderRadius: 24 }}>
+                        <div className='flex justify-center relative w-full mb-[14px]'>
+                            <p className='text-[16px]'>Search any image with Google Lens</p>
+                            <div className='w-[20px] h-[20px] absolute right-0 top-0 cursor-pointer' onClick={() => setShowImageDrop(false)}>
+                                <Cross />
+                            </div>
                         </div>
-                    </div>
-                    <FileDropZone />
-                </div> : <>
-                    <SearchIcon />
-                    <InputCore onChange={handleInputChange} value={query} setFocused={setFocused} ref={inputRef} />
-                    <IconTray setShowImageDrop={setShowImageDrop} />
-                    {query && focused && <SearchResults query={query} />}
-                </>}
+                        <FileDropZone />
+                    </div> : <>
+                        <SearchIcon />
+                        <InputCore onChange={handleInputChange} value={query} setFocused={setFocused} ref={inputRef} />
+                        <IconTray setShowImageDrop={setShowImageDrop} />
+                        {query && focused && <SearchResults query={query}
+                            results={results}
+                            setResults={setResults}
+                            setSelectedIndex={setSelectedIndex}
+                            selectedIndex={selectedIndex}
+                        />}
+                    </>}
             </div>
             <ButtonTray />
             <div className='flex text-[13px] mt-1'>
@@ -109,10 +117,13 @@ const mockSearchResults = [
 ]
 
 const SearchResults: React.FC<{
-    query: string
-}> = ({ query }) => {
-    const [results, setResults] = useState<string[]>([])
-    const [selectedIndex, setSelectedIndex] = useState<number>(-1)
+    query: string,
+    results: string[],
+    setResults: (e: string[]) => void
+    setSelectedIndex: Dispatch<SetStateAction<number>>,
+    selectedIndex: number
+}> = ({ query, results, selectedIndex, setResults, setSelectedIndex }) => {
+
     const resultsContainerRef = useRef<HTMLDivElement>(null)
 
     useEffect(() => {
@@ -183,23 +194,6 @@ const SearchResults: React.FC<{
                 </a>
             ))}
             <div className='flex justify-center -mt-4'><ButtonTray secondary={true} /></div>
-        </div>
-    )
-}
-
-const SearchPage: React.FC = () => {
-    const [query, setQuery] = useState('')
-
-    return (
-        <div className="max-w-xl mx-auto relative">
-            <input
-                type="text"
-                value={query}
-                onChange={(e) => setQuery(e.target.value)}
-                placeholder="Search..."
-                className="w-full p-2 border rounded"
-            />
-            <SearchResults query={query} />
         </div>
     )
 }
