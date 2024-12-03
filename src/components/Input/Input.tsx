@@ -2,6 +2,8 @@
 
 import { ForwardedRef, forwardRef, useRef, useState } from 'react';
 import Tooltip from '@/components/Tooltip';
+import FileDropZone from '../ImageDrop/ImageDrop';
+import useClickOutside from '@/hooks/useClickOutside';
 
 const LANGS = [
     "हिन्दी", "বাংলা", "తెలుగు", "मराठी", "தமிழ்", "ગુજરાતી", "ಕನ್ನಡ", "മലയാളം", "ਪੰਜਾਬੀ",
@@ -78,6 +80,14 @@ const GoogleSearchInput = () => {
 
 
     const [focused, setFocused] = useState(false)
+    const [showImageDrop, setShowImageDrop] = useState(false)
+
+    const dropdownRef = useRef<HTMLDivElement>(null)
+
+
+    useClickOutside(dropdownRef, () => {
+        setShowImageDrop(false)
+    })
 
     return (
         <div
@@ -87,16 +97,25 @@ const GoogleSearchInput = () => {
                 onClick={() => {
                     inputRef.current?.focus()
                 }}
-                className={`hover:bg-inputHover flex items-center h-12 w-[584px] bg-secondary mt-[26px]`} style={{
-                    borderBottomLeftRadius: focused ? 0 : '24px',
-                    borderBottomRightRadius: focused ? 0 : '24px',
+                className={`hover:bg-inputHover flex items-center h-12 w-[584px] bg-secondary mt-[26px] relative`} style={{
+                    borderBottomLeftRadius: '24px',
+                    borderBottomRightRadius: '24px',
                     borderTopLeftRadius: '24px',
                     borderTopRightRadius: '24px',
                     transition: 'border-radius 0.2s'
                 }}>
-                <SearchIcon />
-                <InputCore setFocused={setFocused} ref={inputRef} />
-                <IconTray />
+                {showImageDrop ? <div ref={dropdownRef} className='bg-tertiary w-full h-[362px] absolute left-0 top-0 p-5' style={{ borderRadius: 24 }}>
+                    <div className='flex justify-center relative w-full mb-[14px]'>
+                        <p className='text-[16px]'>Search any image with Google Lens</p>
+                        <div className='w-[20px] h-[20px] absolute right-0 top-0 cursor-pointer' onClick={() => setShowImageDrop(false)}>
+                            <Cross />
+                        </div>
+                    </div>
+                    <FileDropZone />
+                </div> : <>
+                    <SearchIcon />
+                    <InputCore setFocused={setFocused} ref={inputRef} />
+                    <IconTray setShowImageDrop={setShowImageDrop} /></>}
             </div>
             <div className='flex mt-[29px] mb-[21px] gap-[11px] text-[14px]'>
                 <button className='rounded-s bg-[#313134] px-4 hover:border-[#616066] border-[1px] border-transparent h-9'>Google Search</button>
@@ -108,6 +127,10 @@ const GoogleSearchInput = () => {
             </div>
         </div>
     )
+}
+
+const Cross = () => {
+    return <svg fill='#e8e8e8' focusable="false" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"></path></svg>
 }
 
 const InputCore = forwardRef((props: {
@@ -138,7 +161,9 @@ const SearchIcon = () => {
     </div>
 }
 
-const IconTray = () => {
+const IconTray = ({ setShowImageDrop }: {
+    setShowImageDrop: (value: boolean) => void
+}) => {
     return <div className='flex mr-[17px] gap-4 items-center mb-[2px]'>
         <Tooltip text='Search by voice'>
             <div className='w-6'>
@@ -146,7 +171,7 @@ const IconTray = () => {
             </div>
         </Tooltip>
         <Tooltip text='Search by image'>
-            <div className='w-6'>
+            <div className='w-6' onClick={() => setShowImageDrop(true)}>
                 <Lens />
             </div>
         </Tooltip>

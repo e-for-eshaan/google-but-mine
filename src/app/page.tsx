@@ -2,7 +2,6 @@ import Footer from "@/components/Footer/Footer";
 import GoogleSearchInput from "@/components/Input/Input";
 import Navbar from "@/components/Navbar/Navbar";
 import Image from "next/image";
-import { useRef, useState } from "react";
 
 export default async function Home() {
   await new Promise((resolve) => setTimeout(resolve, 1000));
