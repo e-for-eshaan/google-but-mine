@@ -36,7 +36,7 @@ const FileUpload: React.FC = () => {
       <div
         onDragOver={handleDragOver}
         onDrop={handleDrop}
-        className="rounded-lg p-6 text-center flex w-full h-full justify-center items-center gap-[18px]"
+        className="rounded-lg p-6 text-center flex w-full flex-grow justify-center items-center gap-[18px] mt-6"
       >
         <input
           type="file"
@@ -51,12 +51,21 @@ const FileUpload: React.FC = () => {
           Drag an image here or <a onClick={triggerFileInput} className='text-link cursor-pointer hover:underline'>upload a file</a>
         </p>
       </div>
+      <Rule />
       <div className='p-5 pt-0 flex justify-between gap-2'>
         <input placeholder='Paste image link' className='text-[14px] w-[390px] h-[42px] border-[0.5px] border-secondary px-6 bg-[#313134]' style={{ borderRadius: 24 }} />
         <button className='bg-[#313134] hover:bg-[#1E1E22] border-[0.5px] border-secondary px-6 flex-grow' style={{ borderRadius: 24 }} ><a className='text-link'>Search</a></button>
       </div>
     </div>
   )
+}
+
+const Rule = () => {
+  return <div className='flex px-5 text-gray-400 mb-4'>
+    <div className='border-b-[1px] border-secondary h-1/2 flex-grow'></div>
+    <div className='px-5 flex justify-center items-center text-[14px]'>OR</div>
+    <div className='border-b-[1px] border-secondary h-1/2 flex-grow'></div>
+  </div>
 }
 
 
