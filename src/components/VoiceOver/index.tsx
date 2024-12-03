@@ -3,6 +3,7 @@
 import useVoiceOverStore from '@/stores/exampleStore';
 import { useEffect, useState } from 'react';
 import { faker } from "@faker-js/faker";
+import { randInt } from '@/utils';
 
 const VoiceOver = () => {
     const { voiceOver, stopVoiceOver } = useVoiceOverStore()
@@ -85,6 +86,3 @@ export const Mic = () => {
 
 export default VoiceOver
 
-const randInt = (min: number, max: number) => {
-    return Math.random() * (max - min) + min;
-}
