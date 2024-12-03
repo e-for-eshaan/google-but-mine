@@ -41,44 +41,6 @@ const GoogleSearchInput = () => {
         }
     }
 
-    const handleSearch = () => {
-        if (query.trim()) {
-            window.location.href = `https://www.google.com/search?q=${encodeURIComponent(query)}`
-        }
-    }
-
-    const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
-        if (e.key === 'Enter') {
-            if (activeSuggestionIndex > -1 && suggestions[activeSuggestionIndex]) {
-                // Use selected suggestion
-                setQuery(suggestions[activeSuggestionIndex])
-                window.location.href = `https://www.google.com/search?q=${encodeURIComponent(suggestions[activeSuggestionIndex])}`
-            } else {
-                // Use current input
-                handleSearch()
-            }
-        }
-
-        // Handle arrow key navigation for suggestions
-        if (e.key === 'ArrowDown') {
-            setActiveSuggestionIndex(prev =>
-                prev < suggestions.length - 1 ? prev + 1 : prev
-            )
-        }
-
-        if (e.key === 'ArrowUp') {
-            setActiveSuggestionIndex(prev =>
-                prev > 0 ? prev - 1 : -1
-            )
-        }
-    }
-
-    const handleSuggestionClick = (suggestion: string) => {
-        setQuery(suggestion)
-        window.location.href = `https://www.google.com/search?q=${encodeURIComponent(suggestion)}`
-    }
-
-
     const [focused, setFocused] = useState(false)
     const [showImageDrop, setShowImageDrop] = useState(false)
 
@@ -114,7 +76,7 @@ const GoogleSearchInput = () => {
                     <FileDropZone />
                 </div> : <>
                     <SearchIcon />
-                    <InputCore onChange={handleInputChange} onKeyDown={handleKeyDown} value={query} setFocused={setFocused} ref={inputRef} />
+                    <InputCore onChange={handleInputChange} value={query} setFocused={setFocused} ref={inputRef} />
                     <IconTray setShowImageDrop={setShowImageDrop} />
                     {query && focused && <SearchResults query={query} />}
                 </>}
@@ -130,8 +92,8 @@ const GoogleSearchInput = () => {
 
 const ButtonTray = ({ secondary = false }: { secondary?: boolean }) => {
     return <div className='flex mt-[29px] mb-[21px] gap-[11px] text-[14px]'>
-        <button className={`rounded-s ${secondary ?"bg-[#3c4043]" :"bg-[#313134]"} px-4 hover:border-[#616066] border-[1px] border-transparent h-9`}>Google Search</button>
-        <button className={`rounded-s ${secondary ?"bg-[#3c4043]" :"bg-[#313134]"} px-4 hover:border-[#616066] border-[1px] border-transparent h-9`}>I'm Feeling Lucky</button>
+        <button className={`rounded-s ${secondary ? "bg-[#3c4043]" : "bg-[#313134]"} px-4 hover:border-[#616066] border-[1px] border-transparent h-9`}>Google Search</button>
+        <button className={`rounded-s ${secondary ? "bg-[#3c4043]" : "bg-[#313134]"} px-4 hover:border-[#616066] border-[1px] border-transparent h-9`}>I'm Feeling Lucky</button>
     </div>
 }
 
@@ -139,43 +101,17 @@ import React, { useState, useEffect, useRef } from 'react'
 
 // Mock search results (replace with actual API in production)
 const mockSearchResults = [
-    {
-        title: "React TypeScript Tutorial",
-        link: "https://example.com/react-typescript",
-        description: "Learn how to use React with TypeScript for building robust web applications."
-    },
-    {
-        title: "TypeScript Handbook",
-        link: "https://www.typescriptlang.org/docs/handbook",
-        description: "Official documentation for TypeScript programming language and its features."
-    },
-    {
-        title: "React Hooks Guide",
-        link: "https://reactjs.org/docs/hooks-intro.html",
-        description: "Comprehensive guide to understanding and using React Hooks effectively."
-    },
-    {
-        title: "Next.js Documentation",
-        link: "https://nextjs.org/docs",
-        description: "Learn about the Next.js framework and its powerful features for React development."
-    },
-    {
-        title: "Tailwind CSS Tutorial",
-        link: "https://tailwindcss.com/docs",
-        description: "Learn how to use Tailwind CSS for rapid and responsive web design."
-    }
+    "React TypeScript Tutorial",
+    "TypeScript Handbook",
+    "React Hooks Guide",
+    "Next.js Documentation",
+    "Tailwind CSS Tutorial",
 ]
-
-interface SearchResult {
-    title: string
-    link: string
-    description: string
-}
 
 const SearchResults: React.FC<{
     query: string
 }> = ({ query }) => {
-    const [results, setResults] = useState<SearchResult[]>([])
+    const [results, setResults] = useState<string[]>([])
     const [selectedIndex, setSelectedIndex] = useState<number>(-1)
     const resultsContainerRef = useRef<HTMLDivElement>(null)
 
@@ -183,8 +119,7 @@ const SearchResults: React.FC<{
         if (query) {
             const filteredResults = mockSearchResults.filter(
                 result =>
-                    result.title.toLowerCase().includes(query.toLowerCase()) ||
-                    result.description.toLowerCase().includes(query.toLowerCase())
+                    result.toLowerCase().includes(query.toLowerCase())
             )
             setResults(filteredResults)
             setSelectedIndex(-1)
@@ -212,7 +147,7 @@ const SearchResults: React.FC<{
                     break
                 case 'Enter':
                     if (selectedIndex !== -1) {
-                        window.location.href = results[selectedIndex].link
+                        window.location.href = `https://www.google.com/search?q=${encodeURIComponent(results[selectedIndex])}`
                     }
                     break
             }
@@ -223,19 +158,6 @@ const SearchResults: React.FC<{
             window.removeEventListener('keydown', handleKeyDown)
         }
     }, [results, selectedIndex])
-
-    // Scroll selected result into view
-    useEffect(() => {
-        if (selectedIndex !== -1 && resultsContainerRef.current) {
-            const selectedElement = resultsContainerRef.current.children[selectedIndex] as HTMLElement
-            selectedElement?.scrollIntoView({
-                behavior: 'smooth',
-                block: 'nearest'
-            })
-        }
-    }, [selectedIndex])
-
-    if (results.length === 0) return null
 
     return (
         <div
@@ -248,15 +170,15 @@ const SearchResults: React.FC<{
         >
             {results.map((result, index) => (
                 <a
-                    key={result.link}
-                    href={result.link}
+                    key={result}
+                    href={result}
                     className={`hover:bg-secondary flex items-center
-            ${index === selectedIndex ? 'bg-tertiary' : ''}
+            ${index === selectedIndex ? 'bg-secondary' : 'bg-tertiary'}
           `}
                 >
                     <SearchIcon />
                     <p className="py-1">
-                        {result.title}
+                        {result}
                     </p>
                 </a>
             ))}
@@ -289,16 +211,14 @@ const Cross = () => {
 const InputCore = forwardRef((props: {
     setFocused: (focused: boolean) => void
     onChange: (e: React.ChangeEvent<HTMLInputElement>) => void
-    onKeyDown: (e: React.KeyboardEvent<HTMLInputElement>) => void
     value: string
 }, ref: ForwardedRef<HTMLInputElement>) => {
-    const { setFocused, onChange, onKeyDown, value } = props
+    const { setFocused, onChange, value } = props
     return <input
         onBlur={() => setFocused(false)}
         onFocus={() => setFocused(true)}
         ref={ref} className='w-full bg-transparent outline-none'
         onChange={onChange}
-        onKeyDown={onKeyDown}
         value={value}
     />
 }
