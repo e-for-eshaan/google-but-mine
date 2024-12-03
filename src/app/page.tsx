@@ -4,7 +4,6 @@ import Navbar from "@/components/Navbar/Navbar";
 import Image from "next/image";
 
 export default async function Home() {
-  await new Promise((resolve) => setTimeout(resolve, 1000));
   return (
     <div className="min-h-screen flex justify-between items-center flex-col gap-2">
       <Navbar />

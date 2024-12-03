@@ -1,6 +1,6 @@
 "use client";
 
-import { ForwardedRef, forwardRef, useRef, useState } from 'react';
+import { ForwardedRef, forwardRef } from 'react';
 import Tooltip from '@/components/Tooltip';
 import FileDropZone from '../ImageDrop/ImageDrop';
 import useClickOutside from '@/hooks/useClickOutside';
@@ -97,14 +97,14 @@ const GoogleSearchInput = () => {
                 onClick={() => {
                     inputRef.current?.focus()
                 }}
-                className={`hover:bg-inputHover flex items-center h-12 w-[584px] bg-secondary mt-[26px] relative`} style={{
-                    borderBottomLeftRadius: '24px',
-                    borderBottomRightRadius: '24px',
+                className={`${focused ? "hover:bg-tertiary" : "hover:bg-inputHover"} flex items-center h-12 w-[584px] ${focused ? "bg-tertiary" : "bg-secondary"} mt-[26px] relative`} style={{
+                    borderBottomLeftRadius: focused && query ? '0px' : 24,
+                    borderBottomRightRadius: focused && query ? '0px' : 24,
                     borderTopLeftRadius: '24px',
                     borderTopRightRadius: '24px',
                     transition: 'border-radius 0.2s'
                 }}>
-                {showImageDrop ? <div ref={dropdownRef} className='bg-tertiary w-full h-[362px] absolute left-0 top-0 p-5' style={{ borderRadius: 24 }}>
+                {showImageDrop ? <div ref={dropdownRef} className='w-full h-[362px] absolute left-0 top-0 p-5' style={{ borderRadius: 24 }}>
                     <div className='flex justify-center relative w-full mb-[14px]'>
                         <p className='text-[16px]'>Search any image with Google Lens</p>
                         <div className='w-[20px] h-[20px] absolute right-0 top-0 cursor-pointer' onClick={() => setShowImageDrop(false)}>
@@ -114,17 +114,170 @@ const GoogleSearchInput = () => {
                     <FileDropZone />
                 </div> : <>
                     <SearchIcon />
-                    <InputCore setFocused={setFocused} ref={inputRef} />
-                    <IconTray setShowImageDrop={setShowImageDrop} /></>}
+                    <InputCore onChange={handleInputChange} onKeyDown={handleKeyDown} value={query} setFocused={setFocused} ref={inputRef} />
+                    <IconTray setShowImageDrop={setShowImageDrop} />
+                    {query && focused && <SearchResults query={query} />}
+                </>}
             </div>
-            <div className='flex mt-[29px] mb-[21px] gap-[11px] text-[14px]'>
-                <button className='rounded-s bg-[#313134] px-4 hover:border-[#616066] border-[1px] border-transparent h-9'>Google Search</button>
-                <button className='rounded-s bg-[#313134] px-4 hover:border-[#616066] border-[1px] border-transparent h-9'>I'm Feeling Lucky</button>
-            </div>
+            <ButtonTray />
             <div className='flex text-[13px] mt-1'>
                 <p className='text-[#bfbfbf] font-[500]'>Google offered in:</p>
                 <div className='gap-[9px] flex ml-2'>{LANGS.map((item, index) => <a className='text-link font-[600]' key={index}>{item}</a>)}</div>
             </div>
+        </div>
+    )
+}
+
+const ButtonTray = ({ secondary = false }: { secondary?: boolean }) => {
+    return <div className='flex mt-[29px] mb-[21px] gap-[11px] text-[14px]'>
+        <button className={`rounded-s ${secondary ?"bg-[#3c4043]" :"bg-[#313134]"} px-4 hover:border-[#616066] border-[1px] border-transparent h-9`}>Google Search</button>
+        <button className={`rounded-s ${secondary ?"bg-[#3c4043]" :"bg-[#313134]"} px-4 hover:border-[#616066] border-[1px] border-transparent h-9`}>I'm Feeling Lucky</button>
+    </div>
+}
+
+import React, { useState, useEffect, useRef } from 'react'
+
+// Mock search results (replace with actual API in production)
+const mockSearchResults = [
+    {
+        title: "React TypeScript Tutorial",
+        link: "https://example.com/react-typescript",
+        description: "Learn how to use React with TypeScript for building robust web applications."
+    },
+    {
+        title: "TypeScript Handbook",
+        link: "https://www.typescriptlang.org/docs/handbook",
+        description: "Official documentation for TypeScript programming language and its features."
+    },
+    {
+        title: "React Hooks Guide",
+        link: "https://reactjs.org/docs/hooks-intro.html",
+        description: "Comprehensive guide to understanding and using React Hooks effectively."
+    },
+    {
+        title: "Next.js Documentation",
+        link: "https://nextjs.org/docs",
+        description: "Learn about the Next.js framework and its powerful features for React development."
+    },
+    {
+        title: "Tailwind CSS Tutorial",
+        link: "https://tailwindcss.com/docs",
+        description: "Learn how to use Tailwind CSS for rapid and responsive web design."
+    }
+]
+
+interface SearchResult {
+    title: string
+    link: string
+    description: string
+}
+
+const SearchResults: React.FC<{
+    query: string
+}> = ({ query }) => {
+    const [results, setResults] = useState<SearchResult[]>([])
+    const [selectedIndex, setSelectedIndex] = useState<number>(-1)
+    const resultsContainerRef = useRef<HTMLDivElement>(null)
+
+    useEffect(() => {
+        if (query) {
+            const filteredResults = mockSearchResults.filter(
+                result =>
+                    result.title.toLowerCase().includes(query.toLowerCase()) ||
+                    result.description.toLowerCase().includes(query.toLowerCase())
+            )
+            setResults(filteredResults)
+            setSelectedIndex(-1)
+        } else {
+            setResults([])
+        }
+    }, [query])
+
+    useEffect(() => {
+        const handleKeyDown = (e: KeyboardEvent) => {
+            if (results.length === 0) return
+
+            switch (e.key) {
+                case 'ArrowDown':
+                    e.preventDefault()
+                    setSelectedIndex(prev =>
+                        prev < results.length - 1 ? prev + 1 : prev
+                    )
+                    break
+                case 'ArrowUp':
+                    e.preventDefault()
+                    setSelectedIndex(prev =>
+                        prev > 0 ? prev - 1 : -1
+                    )
+                    break
+                case 'Enter':
+                    if (selectedIndex !== -1) {
+                        window.location.href = results[selectedIndex].link
+                    }
+                    break
+            }
+        }
+
+        window.addEventListener('keydown', handleKeyDown)
+        return () => {
+            window.removeEventListener('keydown', handleKeyDown)
+        }
+    }, [results, selectedIndex])
+
+    // Scroll selected result into view
+    useEffect(() => {
+        if (selectedIndex !== -1 && resultsContainerRef.current) {
+            const selectedElement = resultsContainerRef.current.children[selectedIndex] as HTMLElement
+            selectedElement?.scrollIntoView({
+                behavior: 'smooth',
+                block: 'nearest'
+            })
+        }
+    }, [selectedIndex])
+
+    if (results.length === 0) return null
+
+    return (
+        <div
+            ref={resultsContainerRef}
+            className="absolute top-full left-0 right-0 bg-tertiary shadow-lg z-50 max-h-96 overflow-y-auto"
+            style={{
+                borderBottomLeftRadius: 24,
+                borderBottomRightRadius: 24
+            }}
+        >
+            {results.map((result, index) => (
+                <a
+                    key={result.link}
+                    href={result.link}
+                    className={`hover:bg-secondary flex items-center
+            ${index === selectedIndex ? 'bg-tertiary' : ''}
+          `}
+                >
+                    <SearchIcon />
+                    <p className="py-1">
+                        {result.title}
+                    </p>
+                </a>
+            ))}
+            <div className='flex justify-center -mt-4'><ButtonTray secondary={true} /></div>
+        </div>
+    )
+}
+
+const SearchPage: React.FC = () => {
+    const [query, setQuery] = useState('')
+
+    return (
+        <div className="max-w-xl mx-auto relative">
+            <input
+                type="text"
+                value={query}
+                onChange={(e) => setQuery(e.target.value)}
+                placeholder="Search..."
+                className="w-full p-2 border rounded"
+            />
+            <SearchResults query={query} />
         </div>
     )
 }
@@ -135,12 +288,19 @@ const Cross = () => {
 
 const InputCore = forwardRef((props: {
     setFocused: (focused: boolean) => void
+    onChange: (e: React.ChangeEvent<HTMLInputElement>) => void
+    onKeyDown: (e: React.KeyboardEvent<HTMLInputElement>) => void
+    value: string
 }, ref: ForwardedRef<HTMLInputElement>) => {
-    const { setFocused } = props
+    const { setFocused, onChange, onKeyDown, value } = props
     return <input
         onBlur={() => setFocused(false)}
         onFocus={() => setFocused(true)}
-        ref={ref} className='w-full bg-transparent outline-none' />
+        ref={ref} className='w-full bg-transparent outline-none'
+        onChange={onChange}
+        onKeyDown={onKeyDown}
+        value={value}
+    />
 }
 )
 
