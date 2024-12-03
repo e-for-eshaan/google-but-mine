@@ -1,15 +1,18 @@
 "use client";
 
+import { useRouter } from 'next/navigation'
 import React, { useState, useRef, DragEvent, ChangeEvent } from 'react'
 
 const FileUpload: React.FC = () => {
   const [files, setFiles] = useState<File[]>([])
   const fileInputRef = useRef<HTMLInputElement>(null)
+  const router = useRouter()
 
   const handleFileSelect = (e: ChangeEvent<HTMLInputElement>) => {
     if (e.target.files) {
       const newFiles = Array.from(e.target.files)
       setFiles(prevFiles => [...prevFiles, ...newFiles])
+      router.push('/images')
     }
   }
 
@@ -25,6 +28,7 @@ const FileUpload: React.FC = () => {
     if (e.dataTransfer.files) {
       const newFiles = Array.from(e.dataTransfer.files)
       setFiles(prevFiles => [...prevFiles, ...newFiles])
+      router.push('/images')
     }
   }
   const triggerFileInput = () => {
