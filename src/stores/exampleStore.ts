@@ -1,22 +1,25 @@
 import { create } from 'zustand';
 
+// Define the interface for the store state
 interface AppState {
-  count: number;
-  increment: () => void;
-  decrement: () => void;
-  imageDropVisible: boolean;
-  showImageDrop: () => void;
-  hideImageDrop: () => void;
+  voiceOver: boolean;
+  toggleVoiceOver: () => void;
+  startVoiceOver: () => void;
+  stopVoiceOver: () => void;
 }
 
-const appStore = create<AppState>((set) => ({
-  count: 0,
-  increment: () => set((state) => ({ count: state.count + 1 })),
-  decrement: () => set((state) => ({ count: state.count - 1 })),
+// Create the Zustand store
+const useVoiceOverStore = create<AppState>((set) => ({
+  voiceOver: false,
 
-  imageDropVisible: false,
-  showImageDrop: () => set((state) => ({ imageDropVisible: !state.showImageDrop })),
-  hideImageDrop: () => set({ imageDropVisible: false }),
+  // Toggle the voice over state
+  toggleVoiceOver: () => set((state) => ({ voiceOver: !state.voiceOver })),
+
+  // Start voice over
+  startVoiceOver: () => set({ voiceOver: true }),
+
+  // Stop voice over
+  stopVoiceOver: () => set({ voiceOver: false })
 }));
 
-export default appStore;
+export default useVoiceOverStore;
